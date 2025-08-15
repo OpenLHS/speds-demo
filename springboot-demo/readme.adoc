@@ -1,0 +1,189 @@
+// Settings
+:idprefix:
+:idseparator: -
+:component-name: speds-demo2
+:component: SPEDS
+
+= Démonstration {component}
+
+[#overview]
+== Vue d'ensemble
+
+Cette démonstration illustre le fonctionnement du protocole d'échange sécurisé *{component}* entre deux entités communicantes (Alpha et Beta).
+
+La démonstration utilise deux applications Java qui s'échangent des messages via le protocole SPEDS pour valider la communication sécurisée.
+
+[#structure]
+== Structure du projet
+
+```
+springboot-demo/
+├── speds-demo2_source.jar          # Application source (Alpha)
+├── speds-demo2_destination.jar     # Application destination (Beta)
+├── application.yml                 # Configuration par défaut
+├── application-alpha.yml           # Configuration spécifique Alpha
+├── application-beta.yml            # Configuration spécifique Beta
+├── certificates/                   # Certificats pour Alpha
+├── certificates_destination/       # Certificats pour Beta
+├── build/                          # Répertoire de construction
+├── logs/                           # Répertoire des logs
+├── application-alpha.log           # Exemple de fichier log
+└── readme.adoc                     # Cette documentation
+```
+
+[#usage]
+== Utilisation
+
+=== Principe de fonctionnement
+
+La démonstration nécessite **deux terminaux** pour exécuter simultanément :
+
+* **Alpha** - L'entité source qui initie les communications
+* **Beta** - L'entité destination qui répond aux communications
+
+=== Prérequis
+
+Avant le démarrage, s'assurer que :
+
+* Java 11+ est installé
+* Les ports configurés sont disponibles (par défaut : 8080 et 8081)
+* Les répertoires `certificates/` et `certificates_destination/` contiennent les certificats nécessaires
+
+=== Démarrage
+
+**Terminal 1 - Application Alpha :**
+```bash
+java -jar speds-demo2_source.jar --spring.profiles.active=alpha
+```
+
+**Terminal 2 - Application Beta :**
+```bash
+java -jar speds-demo2_destination.jar --spring.profiles.active=beta
+```
+
+NOTE: L'ordre de démarrage n'est pas critique. Les applications peuvent démarrer indépendamment.
+
+[#configuration]
+== Configuration
+
+=== Fichiers de configuration
+
+[cols="2,3"]
+|===
+|Fichier |Usage
+
+|`application.yml`
+|Configuration de base commune
+
+|`application-alpha.yml`
+|Configuration spécifique pour l'entité Alpha (source)
+
+|`application-beta.yml`
+|Configuration spécifique pour l'entité Beta (destination)
+|===
+
+=== Paramètres principaux
+
+==== Réseau et ports
+```yaml
+server:
+  port: 8080  # Alpha utilise 8080, Beta utilise 8081
+```
+
+==== Fréquences d'échange
+```yaml
+parameters:
+  frequence_request: 30   # Fréquence d'envoi (en secondes)
+```
+
+==== Répertoires des certificats
+```yaml
+parameters:
+  directories:
+    certificates: ./certificates          # Pour Alpha
+    # ou
+    certificates: ./certificates_destination  # Pour Beta
+```
+
+==== Configuration des logs
+```yaml
+logging:
+  directory: ./logs
+  file:
+    name: application-alpha  # ou application-beta
+  level:
+    root: INFO
+    ca.griis.speds: DEBUG    # Ajuster selon les besoins
+```
+
+[#monitoring]
+== Surveillance
+
+=== Logs d'exécution
+
+Les logs sont générés dans le répertoire `logs/` :
+
+* `application-alpha.log` - Logs de l'application Alpha
+* `application-beta.log` - Logs de l'application Beta
+
+=== Niveaux de logs recommandés
+
+Pour le debugging :
+```yaml
+logging:
+  level:
+    ca.griis.speds: WARN
+```
+
+=== Indicateurs de fonctionnement
+
+**Démarrage réussi :**
+
+* Application écoute sur le port configuré
+* Chargement des certificats sans erreur
+* Connexion établie avec l'autre entité
+
+**Échange de messages :**
+
+* Messages 101 envoyés selon la fréquence configurée
+* Messages 102 reçus et traités
+* Aucune erreur de protocole dans les logs
+
+[#troubleshooting]
+== Dépannage
+
+=== Problèmes courants
+
+**Port déjà utilisé :**
+```
+Port 8080 already in use
+```
+Solution : Modifier le port dans le fichier de configuration approprié.
+
+**Certificats manquants :**
+```
+Certificate not found in directory
+```
+Solution : Vérifier que les certificats sont présents dans les répertoires `certificates/` et `certificates_destination/`.
+
+**Timeout de connexion :**
+```
+Connection timeout to peer
+```
+Solution : Vérifier que l'autre application est démarrée et accessible sur le port configuré.
+
+[#notes]
+== Notes techniques
+
+* La démonstration utilise le protocole HTTPS pour la communication
+* Les certificats doivent être au format X.509
+* Les clés privées doivent être au format PKCS #8
+* La configuration supporte les profils Spring pour faciliter le déploiement
+
+=== Arrêt propre
+
+Pour arrêter les applications :
+
+* `Ctrl+C` dans chaque terminal
+* Le fait que ce soit un scheduler en arrière peut être plus long et requérir une option de terminaison plus drastique.
+* Les logs finaux sont écrits avant l'arrêt

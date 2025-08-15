@@ -1,0 +1,45 @@
+spring.application.name: speds-application
+
+server:
+  port: 8080
+
+logging:
+  directory: ./build/logs
+  file:
+    name: application-alpha # Default log file name
+
+parameters:
+  # Le nom du certificat et sa clé privée doivent correspondre à la couche. Ex. ses.crt, ses.key, dl.key, etc.
+  my_app_code: alpha
+  my_certificate_directory: build/keys
+  other_certificate_directory: build/keys
+  options:
+    "[speds.app.version]": 6.0.0
+    "[speds.app.reference]": "a reference"
+    "[speds.pre.version]": 6.0.0
+    "[speds.pre.reference]": "a reference"
+    "[speds.ses.version]": 6.0.0
+    "[speds.ses.reference]": "a reference"
+    "[speds.ses.cert]": dynamically_loaded
+    "[speds.ses.private.key]": dynamically_loaded
+    "[speds.tra.version]": 6.0.0
+    "[speds.tra.reference]": "a reference"
+    "[speds.net.version]": 6.0.0
+    "[speds.net.reference]": "a reference"
+    "[speds.net.cert]": dynamically_loaded
+    "[speds.net.private.key]": dynamically_loaded
+    "[speds.dl.protocol]": https
+    "[speds.dl.https.server.host]": localhost
+    "[speds.dl.https.server.port]": 8080
+    "[speds.dl.https.server.cert]": dynamically_loaded
+    "[speds.dl.https.server.private.key]": dynamically_loaded
+    "[speds.dl.https.client.cert.trustmanager.mode]": "insecure"
+  myHost: localhost
+  pgaId: fe2b96b8-aa04-4535-a8dd-b116eb9d3b1f
+  other_host: localhost
+  other_port: 8081
+  other_app_code: beta
+  # la frequence d'envoi en secondes
+  frequence_request: 30
+  # la frequence de reception en secondes
+  frequence_receive: 15

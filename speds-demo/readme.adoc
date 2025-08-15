@@ -1,0 +1,100 @@
+== Démonstration Speds avec fichiers locaux
+
+La démonstration Speds utilise des fichiers locaux pour simuler le fonctionnement du système de transfert sécurisé.
+
+=== Structure du projet
+
+Le projet fournit deux composants principaux :
+
+* `speds-demo_source.jar` - Application source qui envoie les fichiers
+* `speds-demo_destination.jar` - Application destination qui reçoit les fichiers
+
+Deux configurations sont disponibles :
+
+* `config-source.properties` - Configuration pour l'application source
+* `config-destination.properties` - Configuration pour l'application destination
+
+=== Configuration
+
+==== Ordre de priorité des paramètres
+
+L'application charge la configuration selon cet ordre de priorité :
+
+1. **Argument en ligne de commande** - `java -jar app.jar config-custom.properties`
+2. **Propriété système** - `java -Dconfig.file=config-custom.properties -jar app.jar`
+3. **Variable d'environnement** - `CONFIG_FILE=config-custom.properties java -jar app.jar`
+4. **Fichier par défaut** - `config.properties` dans le répertoire courant
+
+==== Exemple de configuration
+
+Configuration type pour `config-source.properties` :
+
+[source,properties]
+----
+path.in=insource
+path.out=outsource
+hostname=localhost
+port=5010
+repeatms=5000
+source.iri=https://localhost:5010
+source.pubkey=[...]
+destination.iri=https://localhost:5020
+destination.pubkey=[...]
+----
+
+=== Fonctionnement
+
+==== Initialisation
+
+* Les répertoires source (`path.in`) et destination (`path.out`) sont créés automatiquement s'ils n'existent pas
+* Les applications peuvent être démarrées dans n'importe quel ordre
+
+==== Transfert de fichiers
+
+* Déposer un fichier dans le répertoire `in` de l'application source déclenche le transfert
+* Le fichier apparaît dans le répertoire `out` de l'application destination
+* Le processus fonctionne dans les deux sens (bidirectionnel)
+* Le fichier source est supprimé après transfert réussi
+* Le fichier de destination est renommé avec un timestamp
+
+==== Vitesse de transfert
+
+La propriété `repeatms` contrôle l'intervalle de vérification des nouveaux fichiers (défaut : 5000ms).
+
+=== Fichiers de test
+
+Le répertoire `files/` contient des fichiers d'exemple pour tester la démonstration :
+
+* `fileA`
+* `fileB`
+* `fileC`
+
+=== Exécution
+
+==== Démarrage de l'application source
+
+[source,bash]
+----
+java -jar speds-demo_source.jar config-source.properties
+----
+
+==== Démarrage de l'application destination
+
+[source,bash]
+----
+java -jar speds-demo_destination.jar config-destination.properties
+----
+
+==== Exemples d'utilisation avancée
+
+Avec propriété système :
+[source,bash]
+----
+java -Dconfig.file=config-prod.properties -jar speds-demo_source.jar
+----
+
+Avec variable d'environnement :
+[source,bash]
+----
+CONFIG_FILE=config-test.properties java -jar speds-demo_source.jar
+----

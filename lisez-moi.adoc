@@ -1,1 +1,1 @@
-Git repository qui contient des applications de démonstration.
+Ce sont deux exemples d'utilisation du protocole SPEDS. Il y a davantage de détails dans chacun des répertoires.
