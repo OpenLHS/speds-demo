@@ -1,0 +1,12 @@
+These are two examples of using the SPEDS protocol. There are more details in each of the directories.
+
+[#licence]
+== Copyright and licences
+
+=== Copyright
+include::copyright.adoc[]
+
+=== Licences
+The code for this project is licensed under the
+link:liliqp-licence-english.adoc[English version].
+
